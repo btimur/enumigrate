@@ -27,7 +27,7 @@ import java.sql.Timestamp;
         "left join books b on od.ID_Book=b.ID_Book " +
         "left join librarians l1 on l1.ID=od.ID_LibrarianOut " +
         "left join librarians l2 on l2.ID=od.ID_LibrarianIn " +
-        "where ID_Order>0  limit 200",resultClass=Orders.class)
+        "where od.ID=?",resultClass=Orders.class)
 
 //@SqlResultSetMapping(name="OrderResults",)
 @Entity
@@ -76,8 +76,8 @@ public class Orders {
     /**
      * Информация
      */
-//    @ApiFormField(typeField = "textbox")
-    private String infrmation1;
+//    @ApiFormField(typeField = "textarea")
+    private String information1;
     /**
      * Срок возврата
      */
@@ -99,8 +99,8 @@ public class Orders {
     /**
      * Информация
      */
-    @ApiFormField(typeField = "textbox")
-    private String infrmation2;
+    @ApiFormField(typeField = "textarea")
+    private String information2;
     /**
      * ИИН пользователя в Платона
      */
@@ -191,15 +191,6 @@ public class Orders {
     }
 
     @Transient
-    public String getInfrmation1() {
-        return infrmation1;
-    }
-
-    public void setInfrmation1(String infrmation1) {
-        this.infrmation1 = infrmation1;
-    }
-
-    @Transient
     public String getSrokvozvrata() {
         return srokvozvrata;
     }
@@ -225,13 +216,25 @@ public class Orders {
     }
 
     @Transient
-    public String getInfrmation2() {
-        return infrmation2;
+    public String getInformation1() {
+        return information1;
     }
 
-    public void setInfrmation2(String infrmation2) {
-        this.infrmation2 = infrmation2;
+    public void setInformation1(String information1) {
+        this.information1 = information1;
     }
+
+    @Transient
+    public String getInformation2() {
+        return information2;
+    }
+
+    public void setInformation2(String information2) {
+        this.information2 = information2;
+    }
+
+
+
 
     public String getIin() {
         return iin;

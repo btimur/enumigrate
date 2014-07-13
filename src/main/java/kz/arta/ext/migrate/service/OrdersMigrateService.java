@@ -41,8 +41,13 @@ public class OrdersMigrateService extends AMigrateService {
         }
 
         fillSigls();
-        List<Orders> orders = repository.getOrders();
-        for (Orders order : orders) {
+        List<Integer> ordersIds = repository.getOrderIds();
+        for (Integer orderId : ordersIds) {
+            Orders order = repository.getOrder(orderId);
+            if(order.getMigrateUUID() != null){
+                log.info("migrated in other mdb ");
+                continue;
+            }
             SaveOneOrder(order);
             MigrateStatusEntity migrateCount = (MigrateStatusEntity) repository.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_ORDERS_CODE);
             migrateCount.setVal(migrateCount.getVal() + 1);
@@ -52,14 +57,14 @@ public class OrdersMigrateService extends AMigrateService {
                 log.info("flag stop was notify ");
                 break;
             }else {
-                Thread.sleep(10000);
+//                Thread.sleep(10000);
             }
         }
     }
 
     private void SaveOneOrder(Orders order) {
         order.setSigla(getKeySigl(order.getSiglID()));
-        order.setInfrmation2("Заказ смигирован из старой БД id = " + order.getId());
+        order.setInformation2("Заказ смигирован из старой БД id = " + order.getId());
         loadToApi(order);
         if (order.getMigrateUUID() != null) {
             OrderDocsEntity orderDocsEntity = (OrderDocsEntity) repository.find(OrderDocsEntity.class, order.getId());

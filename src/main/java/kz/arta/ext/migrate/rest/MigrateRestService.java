@@ -22,10 +22,10 @@ public class MigrateRestService {
     @Inject
     private Logger log;
 
-    @Resource(name = "java:/ConnectionFactory")
+    @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(name = CodeConstants.JMS_DESTINATION)
+    @Resource(mappedName = CodeConstants.JMS_DESTINATION)
     private Destination destination;
 
     @Inject

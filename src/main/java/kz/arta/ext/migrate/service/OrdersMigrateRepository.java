@@ -42,7 +42,15 @@ public class OrdersMigrateRepository {
     public List<Orders> getOrders() {
         return em.createNamedQuery("OrderQuery", Orders.class).getResultList();
     }
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public Orders getOrder(Integer orderId) {
+        return em.createNamedQuery("OrderQuery", Orders.class).setParameter(1, orderId).getSingleResult();
+    }
 
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public List<Integer> getOrderIds() {
+        return em.createQuery("select o.id from OrderDocsEntity o where o.migrateUUID is null and o.idOrder > 0", Integer.class).getResultList();
+    }
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public MigrateStatusWrapper getMigrateStatusWrapper() {
 

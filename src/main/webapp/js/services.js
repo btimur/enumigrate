@@ -5,11 +5,15 @@
 var services = angular.module('migrate.services', ['ngResource']);
 
 services.factory('MigrateFactory', function ($resource) {
-    return $resource('/migrate/rest/jurnal/status', {}, {
-        query: {
-            method: 'GET',
-            params: {},
-            isArray: false
-        }
-    })
+//    url = url || '/migrate/rest/jurnal/status';
+    return function(pathUrl){
+        return $resource(pathUrl, {}, {
+            query: {
+                method: 'GET',
+                params: {},
+                isArray: false
+            }
+        })
+    }
+
 });
