@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" >
+<head>
+    <meta charset="utf-8">
+    <title>My AngularJS App</title>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+<body ng-app="migrate" ng-controller="JurnalCtrl">
+
+<div id="jumbo" class="jumbotron">
+    <div class="container">
+        <img src="img/arta.png">
+        <h1>
+            Миграция!
+        </h1>
+        <p>
+            Это приложение по миграции!
+        </p>
+        <p>
+            Для настройки приложения проделайте следующие действия.
+        </p>
+
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <button type="button" class="btn btn-success" ng-disabled="isStarted" ng-click="startMigrate()">Запуск</button>
+        <button type="button" class="btn btn-danger" ng-disabled="!isStarted" ng-click="endMigrate()">Остановка</button>
+        </div>
+    <div class="row">
+        <h3>Статус миграции</h3>
+        <label class="switch switch-success">
+            <input type="checkbox" class="switch-input" ng-checked="isStarted" disabled="disabled">
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+        </label>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 aria-valuenow="{{procent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{procent}}%;">
+                {{countDid}}/{{countAll}}
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<!--<div ng-view></div>-->
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+-->
+<script src="lib/angular/angular.js"></script>
+<script src="lib/angular/angular-resource.js"></script>
+<script src="js/app.js"></script>
+<script src="js/services.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/directives.js"></script>
+</body>
+</html>
