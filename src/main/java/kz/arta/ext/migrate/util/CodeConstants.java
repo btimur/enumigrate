@@ -5,6 +5,8 @@ package kz.arta.ext.migrate.util;
  */
 public class CodeConstants {
 
+    public static final String USER_ADDITIONAL_FORM_UUID = "user.additional.form.uuid";
+    public static final String USER_ADDITIONAL_IIN_FIELD = "user.additional.iin.field";
     public static final String ORDER_FORM_UUID = "order.form.uuid";
     public static final String ORDER_REGISTRY_UUID = "order.registry.uuid";
     public static final String FORMAT_DATE = "format.date";

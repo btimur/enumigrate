@@ -1,4 +1,4 @@
-package kz.arta.ext.migrate.rest;
+package kz.arta.ext.migrate.rest.api;
 
 import kz.arta.ext.api.config.ConfigReader;
 import kz.arta.ext.api.data.FormData;
@@ -56,12 +56,6 @@ public class OrdersReader extends AFormsReader {
                 return false;
             }
         }
-//        if (order.getParentId()==null || order.getParentId().length()==0){
-//            order.setParentId("root");
-//        }
-//        FormData formData = new FormData();
-//        formData.setUuid(order.getUuid());
-//        formData.setForm(formUUID);
         FormData formData = readFormData(queryContext, order.getMigrateUUID());
 
         if (formData != null) {

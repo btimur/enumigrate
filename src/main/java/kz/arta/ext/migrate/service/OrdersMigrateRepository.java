@@ -59,7 +59,7 @@ public class OrdersMigrateRepository {
         migrateStatusWrapper.setIsStarted(val.equals(CodeConstants.MIGRATE_WORK));
         migrateStatusWrapper.setCountDid(em.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_ORDERS_CODE).getVal());
         migrateStatusWrapper.setCountAll(
-                (Long) em.createQuery("select count(id) from OrderDocsEntity where migrateUUID is null").getSingleResult());
+                (Long) em.createQuery("select count(id) from OrderDocsEntity").getSingleResult());
         migrateStatusWrapper.setProcent(migrateStatusWrapper.getCountDid()*100.0
                 /
                 (migrateStatusWrapper.getCountAll().intValue() + migrateStatusWrapper.getCountDid())

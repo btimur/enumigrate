@@ -5,12 +5,16 @@ import kz.arta.ext.migrate.model.MigrateStatusEntity;
 import kz.arta.ext.migrate.model.OrderDocsEntity;
 import kz.arta.ext.migrate.model.synergy.KeyObject;
 import kz.arta.ext.migrate.model.synergy.Orders;
-import kz.arta.ext.migrate.rest.OrdersReader;
+import kz.arta.ext.migrate.rest.api.OrdersReader;
+import kz.arta.ext.migrate.rest.api.UserAdditionalReader;
 import kz.arta.ext.migrate.util.CodeConstants;
 
-import javax.ejb.*;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by timur on 10/07/2014 11:42.
@@ -23,6 +27,9 @@ public class OrdersMigrateService extends AMigrateService {
     private OrdersReader reader;
 
     @Inject
+    private UserAdditionalReader userReader;
+
+    @Inject
     private OrdersMigrateRepository repository;
 
     private Map<Integer, KeyObject> siglas;
@@ -31,12 +38,12 @@ public class OrdersMigrateService extends AMigrateService {
     public void startProcess(Integer startStatus) throws InterruptedException {
         log.info("Start migrate orders");
         MigrateStatusEntity migrateStatus = (MigrateStatusEntity) repository.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_STATUS_CODE);
-        if(startStatus.equals(CodeConstants.MIGRATE_WORK) && migrateStatus.getVal().equals(CodeConstants.MIGRATE_WORK)){
+        if (startStatus.equals(CodeConstants.MIGRATE_WORK) && migrateStatus.getVal().equals(CodeConstants.MIGRATE_WORK)) {
             return;
         }
         migrateStatus.setVal(startStatus);
         repository.updateMigrateStatus(migrateStatus);
-        if(startStatus.equals(CodeConstants.MIGRATE_STOP)){
+        if (startStatus.equals(CodeConstants.MIGRATE_STOP)) {
             return;
         }
 
@@ -44,27 +51,33 @@ public class OrdersMigrateService extends AMigrateService {
         List<Integer> ordersIds = repository.getOrderIds();
         for (Integer orderId : ordersIds) {
             Orders order = repository.getOrder(orderId);
-            if(order.getMigrateUUID() != null){
+            if (order.getMigrateUUID() != null) {
                 log.info("migrated in other mdb ");
                 continue;
             }
-            SaveOneOrder(order);
-            MigrateStatusEntity migrateCount = (MigrateStatusEntity) repository.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_ORDERS_CODE);
-            migrateCount.setVal(migrateCount.getVal() + 1);
-            repository.updateMigrateStatus(migrateCount);
+            boolean res = saveOneOrder(order);
+            if (res) {
+                MigrateStatusEntity migrateCount = (MigrateStatusEntity) repository.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_ORDERS_CODE);
+                migrateCount.setVal(migrateCount.getVal() + 1);
+                repository.updateMigrateStatus(migrateCount);
+            }
             migrateStatus = (MigrateStatusEntity) repository.find(MigrateStatusEntity.class, CodeConstants.MIGRATE_STATUS_CODE);
-            if (migrateStatus.getVal().equals(CodeConstants.MIGRATE_STOP)){
+            if (migrateStatus.getVal().equals(CodeConstants.MIGRATE_STOP)) {
                 log.info("flag stop was notify ");
                 break;
-            }else {
+            } else {
 //                Thread.sleep(10000);
             }
         }
     }
 
-    private void SaveOneOrder(Orders order) {
+    private boolean saveOneOrder(Orders order) {
         order.setSigla(getKeySigl(order.getSiglID()));
         order.setInformation2("Заказ смигирован из старой БД id = " + order.getId());
+        updateStatus(order);
+        if (order.getIin() != null) {
+            updateFio(order);
+        }
         loadToApi(order);
         if (order.getMigrateUUID() != null) {
             OrderDocsEntity orderDocsEntity = (OrderDocsEntity) repository.find(OrderDocsEntity.class, order.getId());
@@ -72,11 +85,34 @@ public class OrdersMigrateService extends AMigrateService {
 //                orderDocsEntity.setErrorInfo(order.getErrorInfo());
             repository.updateOrderDocs(orderDocsEntity);
             log.info("load to Synergy order id = " + order.getId() + ", uuid = " + order.getMigrateUUID());
-        }else{
+            return true;
+        } else {
             log.info("error load to Synergy order id = " + order.getId());
+            return false;
         }
     }
 
+    private void updateFio(Orders order) {
+
+        order.setUserid(userReader.getUserIdByIin(ConfigUtils.getQueryContext(), order.getIin()));
+    }
+
+    private void updateStatus(Orders order) {
+        Date now = new Date();
+        if (order.getDateofsdacha() == null &&
+                order.getPeriodV() != null &&
+                order.getPeriodV().compareTo(now) < 0) {
+            order.setStatus("2");//Просрочено
+        } else if (order.getDateofsdacha() == null &&
+                order.getPeriodV() != null &&
+                order.getPeriodV().compareTo(now) > 0) {
+            order.setStatus("1");//На руках
+        } else if (order.getDateofsdacha() != null &&
+                order.getPeriodV() != null &&
+                order.getPeriodV().compareTo(order.getDateofsdacha()) < 0) {
+            order.setStatus("3");//Вовремя
+        }
+    }
 
 
     private void fillSigls() {

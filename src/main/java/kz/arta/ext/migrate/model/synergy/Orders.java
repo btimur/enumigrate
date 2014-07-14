@@ -42,6 +42,7 @@ public class Orders {
     /**
      * Пользователь
      */
+    @ApiFormField(typeField = "textbox")
     private String userid;
     /**
      * Название книги
