@@ -18,8 +18,10 @@ import java.sql.Timestamp;
         "l1.Name as vidalbibl, " +
         "od.D_IN as dateofsdacha, " +
         "l2.Name  as prinalbibl , " +
-        "od.D_TERM as periodV, " +
+        "od.D_TERM as srokvozvrata, " +
         "o.ID_OrderStatus as status, " +
+        "st.iinplt, " +
+        "CONCAT(st.lastname, ' ', substring(st.firstname,1,1), '. ', substring(st.patronymic,1,1),'.' ) as fio, " +
         "o.iin " +
         "from orderdocs od " +
         "left join orders o on od.ID_Order=o.ID " +
@@ -27,6 +29,7 @@ import java.sql.Timestamp;
         "left join books b on od.ID_Book=b.ID_Book " +
         "left join librarians l1 on l1.ID=od.ID_LibrarianOut " +
         "left join librarians l2 on l2.ID=od.ID_LibrarianIn " +
+        "left join students st on st.StudentID=o.ID_Stud " +
         "where od.ID=?",resultClass=Orders.class)
 
 //@SqlResultSetMapping(name="OrderResults",)
@@ -82,11 +85,12 @@ public class Orders {
     /**
      * Срок возврата
      */
-    private String srokvozvrata;
-    /***
-     * период выдачи
-     */
-    private Timestamp periodV;
+    @ApiFormField(typeField = "date")
+    private Timestamp srokvozvrata;
+//    /***
+//     * период выдачи
+//     */
+//    private Timestamp periodV;
     /**
      * Дата сдачи
      */
@@ -108,6 +112,10 @@ public class Orders {
     @ApiFormField(typeField = "textbox")
     private String iin;
     /**
+     * ИИН пользователя в Платона
+     */
+    private String iinplt;
+    /**
      * Статус заказа
      */
     @ApiFormField(typeField = "textbox")
@@ -115,6 +123,7 @@ public class Orders {
 
     private String siglaName;
     private Integer siglID;
+    private String fio;
 
     /**
      * uuid в реестре
@@ -191,12 +200,11 @@ public class Orders {
         this.vidalbibl = vidalbibl;
     }
 
-    @Transient
-    public String getSrokvozvrata() {
+    public Timestamp getSrokvozvrata() {
         return srokvozvrata;
     }
 
-    public void setSrokvozvrata(String srokvozvrata) {
+    public void setSrokvozvrata(Timestamp srokvozvrata) {
         this.srokvozvrata = srokvozvrata;
     }
 
@@ -234,9 +242,6 @@ public class Orders {
         this.information2 = information2;
     }
 
-
-
-
     public String getIin() {
         return iin;
     }
@@ -252,16 +257,6 @@ public class Orders {
 
     public void setMigrateUUID(String migrateUUID) {
         this.migrateUUID = migrateUUID;
-    }
-
-
-
-    public Timestamp getPeriodV() {
-        return periodV;
-    }
-
-    public void setPeriodV(Timestamp periodV) {
-        this.periodV = periodV;
     }
 
     public String getStatus() {
@@ -286,5 +281,21 @@ public class Orders {
 
     public void setSiglID(Integer siglID) {
         this.siglID = siglID;
+    }
+
+    public String getIinplt() {
+        return iinplt;
+    }
+
+    public void setIinplt(String iinplt) {
+        this.iinplt = iinplt;
+    }
+
+    public String getFio() {
+        return fio;
+    }
+
+    public void setFio(String fio) {
+        this.fio = fio;
     }
 }

@@ -66,18 +66,13 @@ public class OrdersMigrateService extends AMigrateService {
                 log.info("flag stop was notify ");
                 break;
             } else {
-//                Thread.sleep(10000);
+//                Thread.sleep(10000);//[TODO] для тестирование
             }
         }
     }
 
     private boolean saveOneOrder(Orders order) {
-        order.setSigla(getKeySigl(order.getSiglID()));
-        order.setInformation2("Заказ смигирован из старой БД id = " + order.getId());
-        updateStatus(order);
-        if (order.getIin() != null) {
-            updateFio(order);
-        }
+        prepareOrder(order);
         loadToApi(order);
         if (order.getMigrateUUID() != null) {
             OrderDocsEntity orderDocsEntity = (OrderDocsEntity) repository.find(OrderDocsEntity.class, order.getId());
@@ -92,24 +87,39 @@ public class OrdersMigrateService extends AMigrateService {
         }
     }
 
-    private void updateFio(Orders order) {
+    private void prepareOrder(Orders order) {
+        order.setSigla(getKeySigl(order.getSiglID()));
+        order.setInformation2("Заказ смигирован из старой БД id = " + order.getId());
+        updateStatus(order);
+        if (order.getIin() == null){
+            order.setIin(order.getIinplt());
+        }
+        if (order.getIin() != null) {
+            updateFio(order);
+        }
+        if ((order.getUserid() == null || order.getUserid().trim().length() == 0)
+                && order.getFio() != null ){
+            order.setUserid(order.getFio());
+        }
+    }
 
+    private void updateFio(Orders order) {
         order.setUserid(userReader.getUserIdByIin(ConfigUtils.getQueryContext(), order.getIin()));
     }
 
     private void updateStatus(Orders order) {
         Date now = new Date();
         if (order.getDateofsdacha() == null &&
-                order.getPeriodV() != null &&
-                order.getPeriodV().compareTo(now) < 0) {
+                order.getSrokvozvrata() != null &&
+                order.getSrokvozvrata().compareTo(now) < 0) {
             order.setStatus("2");//Просрочено
         } else if (order.getDateofsdacha() == null &&
-                order.getPeriodV() != null &&
-                order.getPeriodV().compareTo(now) > 0) {
+                order.getSrokvozvrata() != null &&
+                order.getSrokvozvrata().compareTo(now) > 0) {
             order.setStatus("1");//На руках
         } else if (order.getDateofsdacha() != null &&
-                order.getPeriodV() != null &&
-                order.getPeriodV().compareTo(order.getDateofsdacha()) < 0) {
+                order.getSrokvozvrata() != null &&
+                order.getSrokvozvrata().compareTo(order.getDateofsdacha()) < 0) {
             order.setStatus("3");//Вовремя
         }
     }
