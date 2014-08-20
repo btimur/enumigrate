@@ -1,6 +1,7 @@
 package kz.arta.ext.migrate.service;
 
 import kz.arta.ext.api.config.ConfigUtils;
+import kz.arta.ext.api.data.RegistryRecord;
 import kz.arta.ext.migrate.model.MigrateStatusEntity;
 import kz.arta.ext.migrate.model.OrderDocsEntity;
 import kz.arta.ext.migrate.model.synergy.KeyObject;
@@ -146,6 +147,14 @@ public class OrdersMigrateService extends AMigrateService {
             boolean result = reader.saveOrder(order, ConfigUtils.getQueryContext());
             if (!result) {
                 order.setMigrateUUID(null);
+            } else {
+                RegistryRecord record = reader.activateRecord(ConfigUtils.getQueryContext(), order.getMigrateUUID());
+                if (!record.getErrorCode().equals("0")){
+                    log.error("Error activate order " + order.getMigrateUUID() + " error code "
+                            + record.getErrorCode() + " message " + record.getErrorMessage());
+                    order.setMigrateUUID(null);
+
+                }
             }
         } catch (Exception e) {
             log.error(e);

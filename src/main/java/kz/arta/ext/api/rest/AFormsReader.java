@@ -173,21 +173,35 @@ public abstract class AFormsReader extends RestQuery {
         RegistryRecord registryRecord = null;
 //        registryRecord = new RegistryRecord();
 //        registryRecord.setDataUUID("2f0cd960-02b2-4aee-89fd-299091bf669b");
-        if (true){
-            String query = "/rest/api/registry/create_doc?registryID="+registryId;
-            try {
-                String result = doGetQuery(queryContext, query);
-                System.out.println("addNewRegistryRecord.result = " + result);
-                //res = {"errorCode": "0",
-                // "documentID": "2d7ec7a7-61ce-4451-8a7b-2f67552c923f",
-                // "dataUUID": "2f0cd960-02b2-4aee-89fd-299091bf669b",
-                // "asfNodeID": "6bbe555d-834e-4e24-8232-25bfc426c68b" }
-                ObjectMapper objectMapper = new ObjectMapper();
-                registryRecord = objectMapper.readValue(result, RegistryRecord.class);
+        String query = "/rest/api/registry/create_doc?registryID="+registryId;
+        try {
+            String result = doGetQuery(queryContext, query);
+            System.out.println("addNewRegistryRecord.result = " + result);
+            //res = {"errorCode": "0",
+            // "documentID": "2d7ec7a7-61ce-4451-8a7b-2f67552c923f",
+            // "dataUUID": "2f0cd960-02b2-4aee-89fd-299091bf669b",
+            // "asfNodeID": "6bbe555d-834e-4e24-8232-25bfc426c68b" }
+            ObjectMapper objectMapper = new ObjectMapper();
+            registryRecord = objectMapper.readValue(result, RegistryRecord.class);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return registryRecord;
+    }
+
+
+    public RegistryRecord  activateRecord(RestQueryContext queryContext, String dataUUID ){
+        RegistryRecord registryRecord = null;
+        String query = String.format("/rest/api/registry/activate_doc?dataUUID=%S",dataUUID) ;
+        try {
+            String result = doGetQuery(queryContext, query);
+            System.out.println("activateRecord.result = " + result);
+            ObjectMapper objectMapper = new ObjectMapper();
+            registryRecord = objectMapper.readValue(result, RegistryRecord.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return registryRecord;
     }
