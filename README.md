@@ -4,7 +4,10 @@ enu migrate
 
 ##Настройка
 
-* Апдейт БД. Провести скрипт [init.sql](init.sql) на БД books
+* Апдейт БД. 
+ * Провести скрипт [init.sql](init.sql) на БД books
+ * Провести скрипт students.sql на БД books
+* 
 * Настройки JBOSS
  * Добавить датасорс к БД books 
     * Name - **BookDS**
