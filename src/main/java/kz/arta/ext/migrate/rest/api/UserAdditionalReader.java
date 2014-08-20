@@ -29,7 +29,7 @@ public class UserAdditionalReader extends AFormsReader {
                     + "&value="+ iin+"&fieldName="+ iinField;
 
             String resultData = doGetQuery(context, query);
-            System.out.println("resultData = " + resultData);
+            log.debug("resultData = {}", resultData);
             String data = "";
             int startData = resultData.indexOf("[");
             if (startData>=0){

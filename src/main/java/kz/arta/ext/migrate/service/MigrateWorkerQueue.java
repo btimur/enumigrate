@@ -1,7 +1,7 @@
 package kz.arta.ext.migrate.service;
 
 import kz.arta.ext.migrate.util.CodeConstants;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -36,7 +36,7 @@ public class MigrateWorkerQueue implements MessageListener {
             log.info("get message " + message.getText());
             service.startProcess(Integer.valueOf(message.getText()));
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
     }
 }

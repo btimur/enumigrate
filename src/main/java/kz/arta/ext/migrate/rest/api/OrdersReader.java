@@ -11,13 +11,10 @@ import kz.arta.ext.migrate.model.synergy.KeyObject;
 import kz.arta.ext.migrate.model.synergy.Orders;
 import kz.arta.ext.migrate.util.ApiFormField;
 import kz.arta.ext.migrate.util.CodeConstants;
-import org.apache.log4j.Logger;
 
-import javax.inject.Inject;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -31,8 +28,7 @@ public class OrdersReader extends AFormsReader {
     private final String registryUUID;
     private SimpleDateFormat sfDate;
     private SimpleDateFormat sfDateTime;
-    @Inject
-    protected Logger log;
+
 
     public OrdersReader() {
         formUUID = ConfigReader.getPropertyValue(CodeConstants.ORDER_FORM_UUID);

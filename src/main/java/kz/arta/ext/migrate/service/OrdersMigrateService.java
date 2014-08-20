@@ -157,7 +157,7 @@ public class OrdersMigrateService extends AMigrateService {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(),e);
 //            order.setErrorInfo(e.getMessage());
             order.setMigrateUUID(null);
         }

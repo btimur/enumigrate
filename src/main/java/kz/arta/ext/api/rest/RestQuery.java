@@ -1,8 +1,11 @@
 package kz.arta.ext.api.rest;
 
-//import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,6 +19,8 @@ import java.net.URLEncoder;
  * Time: 19:24
  */
 public abstract class RestQuery {
+
+    private Logger restLog = LoggerFactory.getLogger(RestQuery.class);
 
     protected String doGetQuery(RestQueryContext context, String query) throws IOException {
         URL url = new URL(context.getAddress() + query);
@@ -37,8 +42,8 @@ public abstract class RestQuery {
     }
 
     protected String doPostQuery(RestQueryContext context, String query, String data) throws IOException {
-        System.out.println("query = " + query);
-        System.out.println("data = " + data);
+        restLog.debug("query = {}", query);
+        restLog.debug("data = {}", data);
         URL url = new URL(context.getAddress() + query);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");

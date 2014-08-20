@@ -1,9 +1,8 @@
 package kz.arta.ext.migrate.rest;
 
-import kz.arta.ext.migrate.model.MigrateStatusEntity;
 import kz.arta.ext.migrate.service.OrdersMigrateRepository;
 import kz.arta.ext.migrate.util.CodeConstants;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -53,7 +52,7 @@ public class MigrateRestService {
             connection.close();
 
         } catch (JMSException ex) {
-            log.error(ex);
+            log.error(ex.getMessage(), ex);
             return "error " + ex.getMessage();
         }
         return "start";

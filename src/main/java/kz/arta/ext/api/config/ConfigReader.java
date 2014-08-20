@@ -1,6 +1,7 @@
 package kz.arta.ext.api.config;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +15,7 @@ import java.util.Properties;
  * Time: 10:14
  */
 public class ConfigReader {
-    private static final Logger logger = Logger.getLogger(ConfigReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigReader.class);
 
     private static Properties properties = null;
     private static Date lastPropertiesLoad;
