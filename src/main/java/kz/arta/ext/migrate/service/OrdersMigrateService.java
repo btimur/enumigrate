@@ -148,13 +148,7 @@ public class OrdersMigrateService extends AMigrateService {
             if (!result) {
                 order.setMigrateUUID(null);
             } else {
-                RegistryRecord record = reader.activateRecord(ConfigUtils.getQueryContext(), order.getMigrateUUID());
-                if (!record.getErrorCode().equals("0")){
-                    log.error("Error activate order " + order.getMigrateUUID() + " error code "
-                            + record.getErrorCode() + " message " + record.getErrorMessage());
-                    order.setMigrateUUID(null);
-
-                }
+                activateOrder(order);
             }
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -162,6 +156,19 @@ public class OrdersMigrateService extends AMigrateService {
             order.setMigrateUUID(null);
         }
 
+    }
+
+    private void activateOrder(Orders order) {
+        if (order.getDateofsdacha() != null){
+            return;
+        }
+        RegistryRecord record = reader.activateRecord(ConfigUtils.getQueryContext(), order.getMigrateUUID());
+        if (!record.getErrorCode().equals("0")){
+            log.error("Error activate order " + order.getMigrateUUID() + " error code "
+                    + record.getErrorCode() + " message " + record.getErrorMessage());
+            order.setMigrateUUID(null);
+
+        }
     }
 
 }

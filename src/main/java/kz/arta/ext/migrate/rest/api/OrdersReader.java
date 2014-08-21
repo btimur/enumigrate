@@ -24,14 +24,14 @@ import java.util.Map;
  * Created by timur on 12/07/2014 12:46.
  */
 public class OrdersReader extends AFormsReader {
-    private final String formUUID;
+//    private final String formUUID;
     private final String registryUUID;
     private SimpleDateFormat sfDate;
     private SimpleDateFormat sfDateTime;
 
 
     public OrdersReader() {
-        formUUID = ConfigReader.getPropertyValue(CodeConstants.ORDER_FORM_UUID);
+//        formUUID = ConfigReader.getPropertyValue(CodeConstants.ORDER_FORM_UUID);
         registryUUID = ConfigReader.getPropertyValue(CodeConstants.ORDER_REGISTRY_UUID);
         sfDate = new SimpleDateFormat(ConfigReader.getPropertyValue(CodeConstants.FORMAT_DATE));
         sfDateTime = new SimpleDateFormat(ConfigReader.getPropertyValue(CodeConstants.FORMAT_DATETIME));
